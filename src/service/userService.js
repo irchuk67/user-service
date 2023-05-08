@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const User = mongoose.model('User');
+const bcrypt = require('bcryptjs');
 
 function getUsers(){
     return User.find({});
@@ -33,7 +34,13 @@ function deleteUser(id){
     })
 }
 
+async function encryptPassword(password){
+    const hash = await bcrypt.hash(password, 10);
+    return hash;
+}
+
 async function createUser(userToCreate){
+    let encrPassw = await encryptPassword(userToCreate.password);
     const newUser = new User({
         name: userToCreate.name,
         surname: userToCreate.surname,
@@ -42,7 +49,7 @@ async function createUser(userToCreate){
         sex: userToCreate.sex,
         phoneNumber: userToCreate.phoneNumber,
         email: userToCreate.email,
-        password: userToCreate.password,
+        password: encrPassw,
     })
 
     return newUser.save();

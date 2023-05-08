@@ -2,6 +2,7 @@ const express = require('express');
 const {findByEmail} = require("../../service/userService");
 const {NOT_FOUND, OK} = require("../../constants/HTTPCodes");
 const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs')
 const router = express.Router();
 
 router.post('/', async (req, res) => {
@@ -15,7 +16,10 @@ router.post('/', async (req, res) => {
 
     console.log(user.password);
     console.log(req.body.password);
-    if(user.password !== req.body.password){
+
+    const result = await bcrypt.compare(req.body.password, user.password);
+    console.log(result)
+    if(!result){
         res.status(401).send('password is incorrect');
         return;
     }
@@ -30,7 +34,7 @@ router.post('/', async (req, res) => {
                 roles: user.roles
             },
             secretKey,
-            {expiresIn: "1h"}
+            {expiresIn: "1d"}
         )
     }catch (err){
         console.log("Error", err);

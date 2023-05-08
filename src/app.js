@@ -1,7 +1,6 @@
 const express = require('express');
 const cors = require("cors");
 const mongoose = require('mongoose');
-const expressValidator = require('express-validator');
 const bodyParser = require('body-parser');
 
 const app = express();
@@ -13,10 +12,6 @@ app.use(cors({
 }));
 
 app.use(bodyParser.json());
-
-/*
-app.use(expressValidator());
-*/
 
 require('./model/User');
 app.use(require('./route'));
