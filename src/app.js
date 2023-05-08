@@ -20,7 +20,6 @@ app.use(expressValidator());
 
 require('./model/User');
 app.use(require('./route'));
-
 app.listen(PORT, (error) => {
   if(!error) {
     console.log(`Server side is running on port ${PORT}`)
@@ -28,5 +27,4 @@ app.listen(PORT, (error) => {
     console.log("Error: ", error)
   }
 })
-
 module.exports = app;

@@ -12,6 +12,7 @@ const UserSchema = new mongoose.Schema({
     phoneNumber: String,
     email: String,
     password: String,
+    roles: [String]
 }, {collection: 'User', versionKey: false})
 
 module.exports = mongoose.model('User', UserSchema)

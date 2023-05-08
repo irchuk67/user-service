@@ -1,6 +1,4 @@
-
 const mongoose = require("mongoose");
-const {validationResult} = require("express-validator");
 const User = mongoose.model('User');
 
 function getUsers(){
@@ -8,13 +6,17 @@ function getUsers(){
 }
 
 async function existsByEmail({email}){
-    let usersWithSameEmail =  await User.find({email: email});
+    const usersWithSameEmail = await findByEmail(email)
     return usersWithSameEmail.length !== 0;
 }
 
 async function existsByPhoneNumber({phoneNumber}){
     let usersWithSameNumber =  await User.find({phoneNumber: phoneNumber});
     return usersWithSameNumber.length !== 0;
+}
+
+function findByEmail(email) {
+    return User.find({email: email});
 }
 
 function getUserById(id){
@@ -71,5 +73,6 @@ module.exports = {
     updateUserData,
 
     existsByEmail,
-    existsByPhoneNumber
+    existsByPhoneNumber,
+    findByEmail
 }

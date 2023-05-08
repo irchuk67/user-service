@@ -3,28 +3,38 @@ const router = express.Router();
 const {getUsers, createUser, getUserById, deleteUser, updateUserData, existsByEmail, existsByPhoneNumber,} = require("../../service/userService")
 const {NOT_FOUND, OK, NO_CONTENT} = require("../../constants/HTTPCodes");
 const {userValidator, validateUser} = require("../../validator/user");
-const {validationResult} = require("express-validator");
+const verifyToken = require('../../middleware/tokenValidator')
 
-router.get('/', async (req, res) => {
+router.get('/', verifyToken, async (req, res) => {
+    if(!req.user) {
+        return;
+    }
     let users = await getUsers();
     console.log(users)
     res.json(users).status(200);
 
 });
 
-router.get('/:userId', async (req, res) => {
+router.get('/:userId',verifyToken,  async (req, res) => {
+    if(!req.user) {
+        return;
+    }
+
     let user = await getUserById(req.params.userId);
 
     if(!user){
         res.status(NOT_FOUND).send('no user found')
     }else{
-        res.status(OK).json(user)
+        res.status(OK)
     }
 })
 
-router.delete(`/:userId`, async (req, res) => {
+router.delete(`/:userId`, verifyToken, async (req, res) => {
+    if(!req.user) {
+        return;
+    }
+
     const isDeleted = await deleteUser(req.params.userId);
-    console.log(isDeleted)
     if (!isDeleted){
         res.status(NOT_FOUND).send('no user found')
     }else{
@@ -44,7 +54,11 @@ router.post('/', userValidator('createUser'),async (req, res) => {
     return res.status(201).json(newUser);
 });
 
-router.put('/:userId', userValidator('updateUser'), async (req, res) => {
+router.put('/:userId', verifyToken, userValidator('updateUser'), async (req, res) => {
+    if(!req.user) {
+        return;
+    }
+
    const isValid = await validateUser(req, res);
     if(!isValid){
         return;
