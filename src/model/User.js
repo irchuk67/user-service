@@ -12,10 +12,6 @@ const UserSchema = new mongoose.Schema({
     phoneNumber: String,
     email: String,
     password: String,
-    other:{
-        type: [Object],
-        required: false
-    }
 }, {collection: 'User', versionKey: false})
 
 module.exports = mongoose.model('User', UserSchema)

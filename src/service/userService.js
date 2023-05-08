@@ -1,9 +1,20 @@
 
 const mongoose = require("mongoose");
+const {validationResult} = require("express-validator");
 const User = mongoose.model('User');
 
 function getUsers(){
     return User.find({});
+}
+
+async function existsByEmail({email}){
+    let usersWithSameEmail =  await User.find({email: email});
+    return usersWithSameEmail.length !== 0;
+}
+
+async function existsByPhoneNumber({phoneNumber}){
+    let usersWithSameNumber =  await User.find({phoneNumber: phoneNumber});
+    return usersWithSameNumber.length !== 0;
 }
 
 function getUserById(id){
@@ -20,7 +31,7 @@ function deleteUser(id){
     })
 }
 
-function createUser(userToCreate){
+async function createUser(userToCreate){
     const newUser = new User({
         name: userToCreate.name,
         surname: userToCreate.surname,
@@ -30,7 +41,6 @@ function createUser(userToCreate){
         phoneNumber: userToCreate.phoneNumber,
         email: userToCreate.email,
         password: userToCreate.password,
-        other: userToCreate.other
     })
 
     return newUser.save();
@@ -48,7 +58,6 @@ function updateUserData(id, updatedUserData){
             user.phoneNumber =  updatedUserData.phoneNumber ;
             user.email =  updatedUserData.email ;
             user.password =  updatedUserData.password ;
-            user.other =  updatedUserData.other;
 
             return user.save();
         })
@@ -59,5 +68,8 @@ module.exports = {
     createUser,
     getUserById,
     deleteUser,
-    updateUserData
+    updateUserData,
+
+    existsByEmail,
+    existsByPhoneNumber
 }

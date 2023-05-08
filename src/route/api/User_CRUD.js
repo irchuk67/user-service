@@ -1,7 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const {getUsers, createUser, getUserById, deleteUser, updateUserData,} = require("../../services/userService")
+const {getUsers, createUser, getUserById, deleteUser, updateUserData, existsByEmail, existsByPhoneNumber,} = require("../../service/userService")
 const {NOT_FOUND, OK, NO_CONTENT} = require("../../constants/HTTPCodes");
+const {userValidator, validateUser} = require("../../validator/user");
+const {validationResult} = require("express-validator");
 
 router.get('/', async (req, res) => {
     let users = await getUsers();
@@ -32,12 +34,21 @@ router.delete(`/:userId`, async (req, res) => {
 
 router.use(express.json());
 
-router.post('/', async (req, res) => {
+router.post('/', userValidator('createUser'),async (req, res) => {
+    const isValid = await validateUser(req, res);
+    if(!isValid){
+        return;
+    }
+
     const newUser = await createUser(req.body)
     return res.status(201).json(newUser);
 });
 
-router.put('/:userId', async (req, res) => {
+router.put('/:userId', userValidator('updateUser'), async (req, res) => {
+   const isValid = await validateUser(req, res);
+    if(!isValid){
+        return;
+    }
     let updatedUser = await updateUserData(req.params.userId, req.body)
     console.log(updatedUser)
     if (updatedUser === null){
