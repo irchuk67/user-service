@@ -22,18 +22,19 @@ const userValidator = (method) => {
 const validateUser = async (req, res) => {
     const errors = validationResult(req)
     if (!errors.isEmpty()) {
-        res.status(422).json({ errors: errors.array() });
+        res.status(400).json({ errors: errors.array() });
         return false;
     }
 
 
-    let existWithEmail = await existsByEmail(req.body);
+    let existWithEmail = await existsByEmail(req.body, req.params.userId);
     if(existWithEmail){
         res.status(409).send('User with such email exists');
         return false;
     }
 
-    let existWithPhoneNumber = await existsByPhoneNumber(req.body);
+    let existWithPhoneNumber = await existsByPhoneNumber(req.body,  req.params.userId);
+    console.log(existWithPhoneNumber)
     if(existWithPhoneNumber){
         res.status(409).send('User with such phone number exists');
         return false;

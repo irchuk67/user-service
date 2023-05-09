@@ -102,7 +102,8 @@ router.put('/:userId', verifyToken, userValidator('updateUser'), async (req, res
         birthDate: updatedUser.birthDate,
         sex: updatedUser.sex,
         phoneNumber: updatedUser.phoneNumber,
-        email: updatedUser.email
+        email: updatedUser.email,
+        roles: updatedUser.roles
     }
     res.status(OK).json(user)
 })
