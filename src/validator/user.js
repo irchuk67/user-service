@@ -27,13 +27,13 @@ const validateUser = async (req, res) => {
     }
 
 
-    let existWithEmail = await existsByEmail(req.body, req.params.userId);
+    let existWithEmail = await existsByEmail(req.method, req.body, req.params.userId);
     if(existWithEmail){
         res.status(409).send('User with such email exists');
         return false;
     }
 
-    let existWithPhoneNumber = await existsByPhoneNumber(req.body,  req.params.userId);
+    let existWithPhoneNumber = await existsByPhoneNumber(req.method, req.body,  req.params.userId);
     console.log(existWithPhoneNumber)
     if(existWithPhoneNumber){
         res.status(409).send('User with such phone number exists');

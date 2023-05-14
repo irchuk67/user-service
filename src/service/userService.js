@@ -2,13 +2,21 @@ const mongoose = require("mongoose");
 const User = mongoose.model('User');
 const bcrypt = require('bcryptjs');
 
-function getUsers() {
-    return User.find({});
+function getUsersByIds(idsStr, role) {
+    const ids = idsStr.split(",");
+
+    const usersByIds = User.find({
+        '_id':{
+            $in: ids
+        },
+        roles: [role]
+    })
+    return usersByIds;
 }
 
-async function existsByEmail({email}, userId) {
+async function existsByEmail(operation, {email}, userId) {
     const usersWithSameEmail = await findByEmail(email);
-    if (usersWithSameEmail.length > 0) {
+    if (operation === 'PUT' && usersWithSameEmail.length > 0) {
         if (usersWithSameEmail[0]._id.toString() === userId) {
             return false;
         }
@@ -16,11 +24,9 @@ async function existsByEmail({email}, userId) {
     return usersWithSameEmail.length !== 0;
 }
 
-async function existsByPhoneNumber({phoneNumber}, userId) {
+async function existsByPhoneNumber(operation, {phoneNumber}, userId) {
     let usersWithSameNumber = await User.find({phoneNumber: phoneNumber});
-    console.log(usersWithSameNumber[0]._id);
-    console.log(userId);
-    if(usersWithSameNumber.length > 0){
+    if(operation === 'PUT' && usersWithSameNumber.length > 0){
         if (usersWithSameNumber[0]._id.toString() === userId) {
             return false;
         }
@@ -68,7 +74,9 @@ async function createUser(userToCreate) {
     return newUser.save();
 }
 
-function updateUserData(id, updatedUserData) {
+async function updateUserData(id, updatedUserData) {
+    let encryptedPassword = await encryptPassword(updatedUserData.password);
+
     return User.findById(id)
         .then(user => {
             if (!user) return null;
@@ -79,7 +87,7 @@ function updateUserData(id, updatedUserData) {
             user.sex = updatedUserData.sex;
             user.phoneNumber = updatedUserData.phoneNumber;
             user.email = updatedUserData.email;
-            user.password = updatedUserData.password;
+            user.password = encryptedPassword;
             user.roles = updatedUserData.roles;
 
             return user.save();
@@ -87,7 +95,7 @@ function updateUserData(id, updatedUserData) {
 }
 
 module.exports = {
-    getUsers,
+    getUsersByIds,
     createUser,
     getUserById,
     deleteUser,

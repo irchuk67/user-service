@@ -34,7 +34,7 @@ router.post('/', async (req, res) => {
                 roles: user.roles
             },
             secretKey,
-            {expiresIn: "1d"}
+            {expiresIn: "1y"}
         )
     }catch (err){
         console.log("Error", err);
