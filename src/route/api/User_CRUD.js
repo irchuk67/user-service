@@ -1,13 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const {
-    getUsers,
     createUser,
     getUserById,
     deleteUser,
     updateUserData,
-    existsByEmail,
-    existsByPhoneNumber,
     getUsersByIds,
 } = require("../../service/userService")
 const {NOT_FOUND, OK, NO_CONTENT} = require("../../constants/HTTPCodes");
@@ -67,7 +64,10 @@ router.get('/user', verifyToken, async (req, res) => {
 
 })
 
-router.get('/:userId', async (req, res) => {
+router.get('/:userId', verifyToken, async (req, res) => {
+    if(!req.user){
+        return;
+    }
     let user = await getUserById(req.params.userId);
 
     if (!user) {

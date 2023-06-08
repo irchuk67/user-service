@@ -2,9 +2,11 @@ const express = require('express');
 const cors = require("cors");
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+const dotenv = require('dotenv');
 
+dotenv.config();
 const app = express();
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://users:users@localhost:27019/users');
+mongoose.connect(process.env.MONGODB_URI_USERS || 'mongodb://users:users@localhost:27019/users');
 const PORT = process.env.PORT || 7000;
 
 app.use(cors({
