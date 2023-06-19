@@ -2,10 +2,10 @@ const mongoose = require("mongoose");
 const User = mongoose.model('User');
 const bcrypt = require('bcryptjs');
 
-function getUsersByIds(idsStr, role) {
+async function getUsersByIds(idsStr, role) {
     const ids = idsStr.split(",");
 
-    const usersByIds = User.find({
+    const usersByIds = await User.find({
         '_id':{
             $in: ids
         },

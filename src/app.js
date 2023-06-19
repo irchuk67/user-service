@@ -6,7 +6,7 @@ const dotenv = require('dotenv');
 
 dotenv.config();
 const app = express();
-mongoose.connect(process.env.MONGODB_URI_USERS || 'mongodb://users:users@localhost:27019/users');
+mongoose.connect('mongodb+srv://receipts:receipts@cluster0.kkfjbu2.mongodb.net/users?retryWrites=true&w=majority'/*process.env.MONGODB_URI_USERS || 'mongodb://users:users@localhost:27019/users'*/);
 const PORT = process.env.PORT || 7000;
 
 app.use(cors({
